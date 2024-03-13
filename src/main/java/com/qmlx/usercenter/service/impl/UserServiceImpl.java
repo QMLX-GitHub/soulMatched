@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qmlx.usercenter.common.BaseResponse;
 import com.qmlx.usercenter.common.ErrorCode;
 import com.qmlx.usercenter.common.ResultUtils;
+import com.qmlx.usercenter.contant.UserConstant;
 import com.qmlx.usercenter.exception.BusinessException;
 import com.qmlx.usercenter.model.domain.User;
 import com.qmlx.usercenter.service.UserService;
@@ -211,6 +212,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             user.setUserPassword("");
         }
         return userList;
+    }
+
+    @Override
+    public Integer updateUser(User user,HttpServletRequest request) {
+        //判断权限，近管理员和自己可以修改
+        User currentLoginUser = this.getCurrentLoginUser(request);
+        if(currentLoginUser==null){
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        //判断当前用户是否为管理员或者是登陆的用户
+        if(currentLoginUser.getUserRole()!=1&&user.getId()!=currentLoginUser.getId()){
+            throw new BusinessException(ErrorCode.NO_AUTH);
+        }
+        boolean b = this.updateById(user);
+        return b==true?1:0;
+    }
+
+    @Override
+    public User getCurrentLoginUser(HttpServletRequest request) {
+        if(request==null){
+            return null;
+        }
+        //当时登陆的时候用户已经存储在session中了
+        Object userObject = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User user=(User) userObject;
+        return user;
     }
 
 }

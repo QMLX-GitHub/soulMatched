@@ -10,9 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 用户服务测试
@@ -27,6 +32,17 @@ public class UserServiceTest {
     private UserService userService;
 
     @Test
+    public void test(){
+        //["java","python","女"]
+        List<String> stringList=new ArrayList<>();
+        String[] arr={"java","python","女"};
+        for (String s : arr) {
+            stringList.add(s);
+        }
+        System.out.println(stringList.toString());
+        System.out.println(arr.toString());
+    }
+    @Test
     public void testSearchUserByTags(){
         List<String> tagsName= Arrays.asList("java","python");
         List<User> users = userService.searchUserByTags(tagsName);
@@ -37,17 +53,36 @@ public class UserServiceTest {
      */
     @Test
     public void testAddUser() {
-        User user = new User();
-        user.setUsername("dogqmlx");
-        user.setUserAccount("123");
-        user.setAvatarUrl("https://636f-codenav-8grj8px727565176-1256524210.tcb.qcloud.la/img/logo.png");
-        user.setGender(0);
-        user.setUserPassword("xxx");
-        user.setPhone("123");
-        user.setEmail("456");
-        boolean result = userService.save(user);
-        System.out.println(user.getId());
-        Assertions.assertTrue(result);
+        List<User> userList=new ArrayList<>();
+        Random random = new Random();
+        List<String> imageUrlList = new ArrayList<>();
+        // Read image URLs from a file and add them to the list
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\桌面\\output.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                imageUrlList.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        //["java","python","女","考研","工作"]
+        // Print all image URLs from the list
+        for (String imageUrl : imageUrlList) {
+            User user = new User();
+            user.setUsername("dogqmlx");
+            user.setUserAccount("qmlx");
+            user.setAvatarUrl(imageUrl);
+            user.setGender(0);
+            user.setUserPassword("ed5427105cfde31c2d965716304a6066");
+            user.setPhone("17194598767");
+            user.setEmail("77777777@163.com");
+            user.setTags("[\"java\",\"python\",\"女\",\"考研\",\"工作\"]");
+            int nextInt = random.nextInt(100);
+            user.setPlanetCode(nextInt+"-"+11);
+            userList.add(user);
+            userService.save(user);
+        }
+
     }
 
     // https://www.code-nav.cn/

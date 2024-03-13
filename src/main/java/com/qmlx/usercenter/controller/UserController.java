@@ -1,21 +1,26 @@
 package com.qmlx.usercenter.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import com.qmlx.usercenter.common.BaseResponse;
 import com.qmlx.usercenter.common.ErrorCode;
 import com.qmlx.usercenter.common.ResultUtils;
 import com.qmlx.usercenter.exception.BusinessException;
+import com.qmlx.usercenter.mapper.UserMapper;
 import com.qmlx.usercenter.model.domain.User;
 import com.qmlx.usercenter.model.domain.request.UserLoginRequest;
 import com.qmlx.usercenter.model.domain.request.UserRegisterRequest;
 import com.qmlx.usercenter.service.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +35,7 @@ import static com.qmlx.usercenter.contant.UserConstant.USER_LOGIN_STATE;
  */
 @RestController
 @RequestMapping("/user")
+//@CrossOrigin(origins = {"http://localhost:3000/"})
 public class UserController {
 
     @Resource
@@ -96,7 +102,6 @@ public class UserController {
 
     /**
      * 获取当前用户
-     *
      * @param request
      * @return
      */
@@ -114,7 +119,6 @@ public class UserController {
         return ResultUtils.success(safetyUser);
     }
 
-    // https://qmlx.icu/
 
     @GetMapping("/search")
     public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request) {
@@ -130,6 +134,38 @@ public class UserController {
         return ResultUtils.success(list);
     }
 
+    @GetMapping("/search/tags")
+    public BaseResponse<List<User>> searchUserByTags(@RequestParam(required = false) List<String> tagNameList){
+        if(CollectionUtils.isEmpty(tagNameList)){
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        List<User> userByTags = userService.searchUserByTags(tagNameList);
+        return ResultUtils.success(userByTags);
+    }
+
+    @PostMapping("/update")
+    public BaseResponse<Integer> updateUser(@RequestBody User user,HttpServletRequest request){
+        //修改用户
+        //1,校验参数是否为空
+        if(user==null){
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+
+        //2,判断当前用户权限
+        Integer res = userService.updateUser(user, request);
+        return ResultUtils.success(res);
+    }
+
+    @GetMapping("/recommend")
+    public BaseResponse<Page<User>> recommendUser(long pageSize,long pageNum,HttpServletRequest request){
+
+        LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<>();
+        Page<User> userPage = new Page<>(pageNum,pageSize);
+        Page<User> userList = userService.page(userPage, wrapper);
+        //List<User> userList = userService.list(wrapper);
+
+        return ResultUtils.success(userList);
+    }
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
         if (!isAdmin(request)) {
@@ -156,5 +192,12 @@ public class UserController {
         User user = (User) userObj;
         return user != null && user.getUserRole() == ADMIN_ROLE;
     }
+
+    @GetMapping("/test")
+    public BaseResponse<List<User>> testUser(){
+        List<User> user = userService.searchUserByTags(Arrays.asList("java"));
+        return ResultUtils.success(user);
+    }
+
 
 }

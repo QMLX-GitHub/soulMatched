@@ -4,15 +4,32 @@
 spring:
   application:
     name: soulMatch-backend
-  # DataSource Config
+  # Mysql配置
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/soulmatch
-    username: root
-    password: QMLX-9999
+    url: jdbc:mysql://47.113.151.190:3306/soulmatch
+    username: soulmatch
+    password: 123456
+  #Redis配置
+  redis:
+    database: 0
+    port: 6379
+    #host: 192.168.101.100
+    #password: QMLX-9999
+    host: 47.113.151.190
+    #password: 123456
   # session 失效时间
   session:
-    timeout: 86400
+    store-type: redis
+    timeout: PT30M
+  #防止swagger报错，配置的mvc
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  profiles:
+    active: dev
+
+
 server:
   port: 8080
   servlet:
