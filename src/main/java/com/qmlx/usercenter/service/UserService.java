@@ -1,5 +1,6 @@
 package com.qmlx.usercenter.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qmlx.usercenter.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -72,6 +73,15 @@ public interface UserService extends IService<User> {
      * @return
      */
     User getCurrentLoginUser(HttpServletRequest request);
+
+    /**
+     * 分页查询用户信息
+     * @param pageSize
+     * @param pageNum
+     * @param request
+     * @return
+     */
+    Page<User> recommendUser(long pageNum,long pageSize,HttpServletRequest request);
 
 
 }

@@ -4,6 +4,7 @@ package com.qmlx.usercenter.service;
 
 import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
 import com.qmlx.usercenter.model.domain.User;
+import com.qmlx.usercenter.utils.RandomUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ public class UserServiceTest {
         Random random = new Random();
         List<String> imageUrlList = new ArrayList<>();
         // Read image URLs from a file and add them to the list
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\桌面\\output.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\桌面\\outputs.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 imageUrlList.add(line);
@@ -67,20 +68,22 @@ public class UserServiceTest {
         }
         //["java","python","女","考研","工作"]
         // Print all image URLs from the list
+        int temp=0;
         for (String imageUrl : imageUrlList) {
             User user = new User();
-            user.setUsername("dogqmlx");
-            user.setUserAccount("qmlx");
+            user.setUsername("qmlxTest"+temp);
+            user.setUserAccount("Test"+temp);
             user.setAvatarUrl(imageUrl);
-            user.setGender(0);
+            user.setGender(random.nextInt(3));
             user.setUserPassword("ed5427105cfde31c2d965716304a6066");
-            user.setPhone("17194598767");
-            user.setEmail("77777777@163.com");
-            user.setTags("[\"java\",\"python\",\"女\",\"考研\",\"工作\"]");
-            int nextInt = random.nextInt(100);
-            user.setPlanetCode(nextInt+"-"+11);
+            user.setPhone(RandomUtils.getRandomPhone());
+            user.setEmail(RandomUtils.getRandomPhone()+"@qq.com");
+            user.setTags(RandomUtils.GetRandomTags());
+            int code = random.nextInt(1000);
+            user.setPlanetCode(code+"-"+temp);
             userList.add(user);
             userService.save(user);
+            temp++;
         }
 
     }

@@ -2,6 +2,7 @@ package com.qmlx.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qmlx.usercenter.common.BaseResponse;
 import com.qmlx.usercenter.common.ErrorCode;
@@ -11,8 +12,12 @@ import com.qmlx.usercenter.exception.BusinessException;
 import com.qmlx.usercenter.model.domain.User;
 import com.qmlx.usercenter.service.UserService;
 import com.qmlx.usercenter.mapper.UserMapper;
+import com.qmlx.usercenter.utils.UserUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
@@ -20,6 +25,7 @@ import org.springframework.util.DigestUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +42,8 @@ import static com.qmlx.usercenter.contant.UserConstant.USER_LOGIN_STATE;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
 
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
     @Resource
     private UserMapper userMapper;
 
@@ -238,6 +246,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         Object userObject = request.getSession().getAttribute(USER_LOGIN_STATE);
         User user=(User) userObject;
         return user;
+    }
+
+    @Override
+    public Page<User> recommendUser( long pageNum,long pageSize, HttpServletRequest request) {
+        long currentUserId = UserUtils.getCurrentUserId(request);
+        //现在缓存中判断当前用户加载的数据是否存入了缓存中
+        String rediKey=String.format("soulmatch:qmlx:recommend:%s",currentUserId);
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        Object userList = valueOperations.get(rediKey);
+        Page<User> userPageResult=(Page<User>) userList;
+        if(userPageResult!=null){
+            //说明缓存中有数据
+            return userPageResult;
+        }
+        //如果缓存中没有数据就从数据库中查询
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        Page<User> page=new Page<>(pageNum,pageSize);
+        userPageResult = this.page(page, wrapper);
+
+        //将数据写入缓存
+        try {
+            valueOperations.set(rediKey,userPageResult,2, TimeUnit.HOURS);
+        } catch (Exception e) {
+            log.info("redis set key error",e);
+            throw new RuntimeException(e);
+        }
+        return userPageResult;
     }
 
 }

@@ -13,6 +13,7 @@ import com.qmlx.usercenter.model.domain.User;
 import com.qmlx.usercenter.model.domain.request.UserLoginRequest;
 import com.qmlx.usercenter.model.domain.request.UserRegisterRequest;
 import com.qmlx.usercenter.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -157,14 +158,10 @@ public class UserController {
     }
 
     @GetMapping("/recommend")
+    @ApiOperation("首页查询用户")
     public BaseResponse<Page<User>> recommendUser(long pageSize,long pageNum,HttpServletRequest request){
-
-        LambdaQueryWrapper<User> wrapper=new LambdaQueryWrapper<>();
-        Page<User> userPage = new Page<>(pageNum,pageSize);
-        Page<User> userList = userService.page(userPage, wrapper);
-        //List<User> userList = userService.list(wrapper);
-
-        return ResultUtils.success(userList);
+        Page<User> recommendUser = userService.recommendUser(pageNum, pageSize, request);
+        return ResultUtils.success(recommendUser);
     }
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
