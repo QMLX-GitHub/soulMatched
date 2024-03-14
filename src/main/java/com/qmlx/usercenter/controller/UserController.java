@@ -13,6 +13,8 @@ import com.qmlx.usercenter.model.domain.User;
 import com.qmlx.usercenter.model.domain.request.UserLoginRequest;
 import com.qmlx.usercenter.model.domain.request.UserRegisterRequest;
 import com.qmlx.usercenter.service.UserService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -57,11 +59,10 @@ public class UserController {
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
-        String planetCode = userRegisterRequest.getPlanetCode();
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, planetCode)) {
+        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
             return null;
         }
-        long result = userService.userRegister(userAccount, userPassword, checkPassword, planetCode);
+        long result = userService.userRegister(userAccount, userPassword, checkPassword);
         return ResultUtils.success(result);
     }
 
@@ -144,6 +145,9 @@ public class UserController {
         return ResultUtils.success(userByTags);
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "user", value = "用户类")
+    })
     @PostMapping("/update")
     public BaseResponse<Integer> updateUser(@RequestBody User user,HttpServletRequest request){
         //修改用户
