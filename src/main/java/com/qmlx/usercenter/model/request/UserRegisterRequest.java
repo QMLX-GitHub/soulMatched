@@ -1,4 +1,4 @@
-package com.qmlx.usercenter.model.domain.request;
+package com.qmlx.usercenter.model.request;
 
 import lombok.Data;
 

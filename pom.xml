@@ -58,12 +58,6 @@
             <version>1.14.3</version> <!-- 请检查是否有更新的版本 -->
         </dependency>
 
-    <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>-->
         <!-- redis -->
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis -->
         <!--redis起步依赖-->

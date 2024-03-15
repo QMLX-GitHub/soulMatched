@@ -16,7 +16,7 @@ spring:
   # session 失效时间
   session:
     store-type: redis
-    timeout: PT30M
+    timeout: PT10M
   #防止swagger报错，配置的mvc
   mvc:
     pathmatch:
@@ -32,6 +32,8 @@ server:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启查询的sql输出
+
   global-config:
     db-config:
       logic-delete-field: isDelete # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)

@@ -92,6 +92,11 @@ public class User implements Serializable {
      */
     private String tags;
 
+    /**
+     * 用户个人介绍
+     */
+    private String selfIntroduction;
+
     // https://github.com/liqmlx
 
     @TableField(exist = false)

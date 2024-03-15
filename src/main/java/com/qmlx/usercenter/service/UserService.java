@@ -1,8 +1,10 @@
 package com.qmlx.usercenter.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.qmlx.usercenter.model.domain.Team;
 import com.qmlx.usercenter.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.qmlx.usercenter.model.dto.TeamQuery;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -82,6 +84,12 @@ public interface UserService extends IService<User> {
      * @return
      */
     Page<User> recommendUser(long pageNum,long pageSize,HttpServletRequest request);
+
+
+
+
+
+
 
 
 }

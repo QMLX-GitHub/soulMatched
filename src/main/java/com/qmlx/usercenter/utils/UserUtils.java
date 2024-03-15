@@ -17,4 +17,13 @@ public class UserUtils {
         }
         return user.getId();
     }
+
+    public static User getCurrentUser(HttpServletRequest request){
+        Object objUser = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+        User user=(User) objUser;
+        if(user==null){
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        return user;
+    }
 }

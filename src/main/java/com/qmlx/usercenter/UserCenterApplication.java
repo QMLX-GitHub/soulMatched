@@ -9,9 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 启动类
- *
- * @author <a href="https://github.com/liqmlx">程序员鱼皮</a>
- * @from <a href="https://qmlx.icu">编程导航知识星球</a>
  */
 @SpringBootApplication
 @MapperScan("com.qmlx.usercenter.mapper")

@@ -1,17 +1,14 @@
 package com.qmlx.usercenter.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.qmlx.usercenter.common.BaseResponse;
 import com.qmlx.usercenter.common.ErrorCode;
 import com.qmlx.usercenter.common.ResultUtils;
 import com.qmlx.usercenter.exception.BusinessException;
-import com.qmlx.usercenter.mapper.UserMapper;
 import com.qmlx.usercenter.model.domain.User;
-import com.qmlx.usercenter.model.domain.request.UserLoginRequest;
-import com.qmlx.usercenter.model.domain.request.UserRegisterRequest;
+import com.qmlx.usercenter.model.request.UserLoginRequest;
+import com.qmlx.usercenter.model.request.UserRegisterRequest;
 import com.qmlx.usercenter.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

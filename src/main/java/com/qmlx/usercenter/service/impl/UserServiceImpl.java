@@ -9,7 +9,9 @@ import com.qmlx.usercenter.common.ErrorCode;
 import com.qmlx.usercenter.common.ResultUtils;
 import com.qmlx.usercenter.contant.UserConstant;
 import com.qmlx.usercenter.exception.BusinessException;
+import com.qmlx.usercenter.model.domain.Team;
 import com.qmlx.usercenter.model.domain.User;
+import com.qmlx.usercenter.model.dto.TeamQuery;
 import com.qmlx.usercenter.service.UserService;
 import com.qmlx.usercenter.mapper.UserMapper;
 import com.qmlx.usercenter.utils.UserUtils;
@@ -175,6 +177,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safetyUser.setUserRole(originUser.getUserRole());
         safetyUser.setUserStatus(originUser.getUserStatus());
         safetyUser.setCreateTime(originUser.getCreateTime());
+        safetyUser.setSelfIntroduction(originUser.getSelfIntroduction());
         return safetyUser;
     }
 
@@ -264,6 +267,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         return userPageResult;
     }
+
+
+
 
 }
 
