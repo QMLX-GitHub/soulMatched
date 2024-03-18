@@ -255,6 +255,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         //如果缓存中没有数据就从数据库中查询
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        if (pageSize<=0){
+            pageSize=10;
+        }
         Page<User> page=new Page<>(pageNum,pageSize);
         userPageResult = this.page(page, wrapper);
 

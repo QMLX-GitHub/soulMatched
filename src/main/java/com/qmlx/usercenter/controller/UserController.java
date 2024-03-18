@@ -34,7 +34,7 @@ import static com.qmlx.usercenter.contant.UserConstant.USER_LOGIN_STATE;
  */
 @RestController
 @RequestMapping("/user")
-//@CrossOrigin(origins = {"http://localhost:3000/"})
+@CrossOrigin(origins = {"http://localhost:3000/"})
 public class UserController {
 
     @Resource

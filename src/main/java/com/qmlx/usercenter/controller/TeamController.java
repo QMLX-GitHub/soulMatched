@@ -1,6 +1,5 @@
 package com.qmlx.usercenter.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qmlx.usercenter.common.BaseResponse;
 import com.qmlx.usercenter.common.ErrorCode;
@@ -9,7 +8,9 @@ import com.qmlx.usercenter.exception.BusinessException;
 import com.qmlx.usercenter.model.domain.Team;
 import com.qmlx.usercenter.model.domain.User;
 import com.qmlx.usercenter.model.dto.TeamQuery;
+import com.qmlx.usercenter.model.request.DeleteRequest;
 import com.qmlx.usercenter.model.request.TeamJoinRequest;
+import com.qmlx.usercenter.model.request.TeamQuitRequest;
 import com.qmlx.usercenter.model.vo.TeamUserVO;
 import com.qmlx.usercenter.service.TeamService;
 import com.qmlx.usercenter.service.UserService;
@@ -27,7 +28,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-//@CrossOrigin(origins ={"http://localhost:3000"})
+@CrossOrigin(origins ={"http://localhost:3000"})
 @RequestMapping ("/team")
 @Api(value = "队伍相关接口")
 public class TeamController {
@@ -54,7 +55,7 @@ public class TeamController {
 
     @PostMapping("/delete")
     @ApiOperation(value = "删除队伍",notes = "需要传入一个队伍id，删除成功返回true")
-    public BaseResponse<Boolean> deleteTeam(@RequestBody long id,HttpServletRequest request){
+    public BaseResponse<Boolean> deleteTeam(@RequestBody long id, HttpServletRequest request){
         if(id<=0){
             throw new BusinessException(ErrorCode.NULL_ERROR);
         }
@@ -126,26 +127,26 @@ public class TeamController {
 
     @GetMapping("/list/my/create")
     @ApiOperation(value = "我创建的队伍",notes = "查询我创建的队伍")
-    public BaseResponse<List<Team>> listmyCreateTeam( TeamQuery teamQuery,HttpServletRequest request){
+    public BaseResponse<List<TeamUserVO>> listmyCreateTeam( TeamQuery teamQuery,HttpServletRequest request){
         //获取当前登录用户
         User currentLoginUser = UserUtils.getCurrentUser(request);
         if(currentLoginUser==null){
             throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
-        List<Team> myTeamList=teamService.listMyTeam(teamQuery,currentLoginUser);
+        List<TeamUserVO> myTeamList=teamService.listMyTeam(teamQuery,currentLoginUser);
 
        return ResultUtils.success(myTeamList);
     }
 
     @GetMapping("/list/my/join")
     @ApiOperation(value = "我加入的队伍",notes = "查询我加入的队伍")
-    public BaseResponse<List<Team>> listmyJoinTeam( TeamQuery teamQuery,HttpServletRequest request){
+    public BaseResponse<List<TeamUserVO>> listmyJoinTeam( TeamQuery teamQuery,HttpServletRequest request){
         //获取当前登录用户
         User currentLoginUser = UserUtils.getCurrentUser(request);
         if(currentLoginUser==null){
             throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
-        List<Team> myTeamList=teamService.listMyJoinTeam(teamQuery,currentLoginUser);
+        List<TeamUserVO> myTeamList=teamService.listMyJoinTeam(teamQuery,currentLoginUser);
 
         return ResultUtils.success(myTeamList);
     }
@@ -164,6 +165,28 @@ public class TeamController {
         return ResultUtils.success(isJoin);
     }
 
+    @PostMapping("/quit")
+    @ApiOperation(value = "退出队伍",notes = "传入一个队伍id即可")
+    public BaseResponse<Boolean> quitTeam(@RequestBody TeamQuitRequest teamQuitRequest, HttpServletRequest request) {
+        if (teamQuitRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser =UserUtils.getCurrentUser(request);
+        boolean result = teamService.quitTeam(teamQuitRequest, loginUser);
+        return ResultUtils.success(result);
+    }
+
+    @GetMapping("/match")
+    @ApiOperation(value = "心动模式",notes = "只会匹配最符合被要求的十条数据")
+    public BaseResponse<Boolean> matchTeam(@RequestBody TeamQuitRequest teamQuitRequest, HttpServletRequest request) {
+
+        if (teamQuitRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser =UserUtils.getCurrentUser(request);
+        boolean result = teamService.quitTeam(teamQuitRequest, loginUser);
+        return ResultUtils.success(result);
+    }
 
 
 
