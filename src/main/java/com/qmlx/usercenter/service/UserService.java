@@ -85,6 +85,8 @@ public interface UserService extends IService<User> {
      */
     Page<User> recommendUser(long pageNum,long pageSize,HttpServletRequest request);
 
+    List<User> matchUsers(long num, User loginUser);
+
 
 
 

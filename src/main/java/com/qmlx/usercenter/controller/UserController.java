@@ -7,9 +7,11 @@ import com.qmlx.usercenter.common.ErrorCode;
 import com.qmlx.usercenter.common.ResultUtils;
 import com.qmlx.usercenter.exception.BusinessException;
 import com.qmlx.usercenter.model.domain.User;
+import com.qmlx.usercenter.model.request.TeamQuitRequest;
 import com.qmlx.usercenter.model.request.UserLoginRequest;
 import com.qmlx.usercenter.model.request.UserRegisterRequest;
 import com.qmlx.usercenter.service.UserService;
+import com.qmlx.usercenter.utils.UserUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -196,5 +198,13 @@ public class UserController {
         return ResultUtils.success(user);
     }
 
+    @GetMapping("/match")
+    @ApiOperation(value = "心动模式",notes = "只会匹配最符合被要求的十条数据")
+    public BaseResponse<List<User>> matchTeam(long num, HttpServletRequest request) {
 
+
+        User loginUser = UserUtils.getCurrentUser(request);
+        List<User> matchUsers = userService.matchUsers(num, loginUser);
+        return ResultUtils.success(matchUsers);
+    }
 }

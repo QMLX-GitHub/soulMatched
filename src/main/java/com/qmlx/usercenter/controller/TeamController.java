@@ -176,17 +176,7 @@ public class TeamController {
         return ResultUtils.success(result);
     }
 
-    @GetMapping("/match")
-    @ApiOperation(value = "心动模式",notes = "只会匹配最符合被要求的十条数据")
-    public BaseResponse<Boolean> matchTeam(@RequestBody TeamQuitRequest teamQuitRequest, HttpServletRequest request) {
 
-        if (teamQuitRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        User loginUser =UserUtils.getCurrentUser(request);
-        boolean result = teamService.quitTeam(teamQuitRequest, loginUser);
-        return ResultUtils.success(result);
-    }
 
 
 
